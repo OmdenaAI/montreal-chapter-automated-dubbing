@@ -11,7 +11,7 @@ Note : Please Follow the below guidelines to create task folders
 
 | Task No| Task Name | Details |
 |-|-|-|
-|1|         |         |
+|1|video processing     | This task would be responsible for both loading video files into memory and extracting the audio track from the videos.        |
 |2|         |         |
 |3|         |         |
 |4|         |         |
