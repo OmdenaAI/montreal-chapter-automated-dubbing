@@ -3,7 +3,7 @@ import whisper
 
 
 class Speech2TextProcessor:
-    def speech_to_text(self, audio_file: str) -> List[Dict[str, str]]:
+    def speech_to_text(self, audio_file: str) -> List[Dict[str, int, int, str, str]]:
         """
         Perform speech-to-text conversion on the audio.
         During the process the language is detected, as well as each speaker gender.
@@ -19,10 +19,10 @@ class Speech2TextProcessor:
         -------
         The list of transcribed, timestamped, text segments. Dictionary elements:
             - text: str - the transcribed text segment (phrase?)
-            - start: start time of phrase within the audio, in milliseconds
-            - end: end time of phrase within the audio, in milliseconds
-            - language: auto detected language in audio segment (language list defined in .config)
-            - speaker_gender: auto detected gender of speaker in segment ("Female" / "Male" / "Other")
+            - start: int - start time of phrase within the audio, in milliseconds
+            - end: int - end time of phrase within the audio, in milliseconds
+            - language: str - auto detected language in audio segment (language list defined in .config)
+            - speaker_gender: str - auto detected gender of speaker in segment ("Female" / "Male" / "Other")
 
         Example:
 
@@ -33,6 +33,6 @@ class Speech2TextProcessor:
 
         """
 
-        text_segments = [dict(), dict(), dict(), dict()]
+        text_segments = [dict(), dict()]
 
         return text_segments
