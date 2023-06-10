@@ -1,3 +1,5 @@
 - Text to speech Task is done using SpeechBrain.
 - Input is a srt file which is a subtitle file.
 - A function is written for generating speech for the desired text using the voice characteristics,text phrases i.e subtitle file. It gives an audio file as output with synchronised audio for the text.
+- ".wav" files are the output of the task.
+- ".srt" files are the input subtitle files.
