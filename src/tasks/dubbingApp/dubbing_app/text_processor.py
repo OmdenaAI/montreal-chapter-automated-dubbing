@@ -1,11 +1,11 @@
-from typing import List, Dict
+from typing import Dict, List, Union
+from translate import Translator
 
 
 class TextProcessor:
-    def translate_text_segments(self, text_segments: list, target_language: str) -> List[Dict[str, int, int, str, str]]:
+    def translate_text_segments(self, text_segments: list, target_language: str) -> List[Dict[str, Union[str, int]]]:
         """
         Perform text translation of all text segments.
-        ToDo: Confirm output format together with #task-04 and #task-05
 
         Parameters
         ----------
@@ -14,7 +14,7 @@ class TextProcessor:
             - text: str - the transcribed text segment (phrase?)
             - start: int - start time of phrase within the audio, in milliseconds
             - end: int - end time of phrase within the audio, in milliseconds
-            - language: str - auto detected language in audio segment (language list defined in .config)
+            - language: str - original language in audio segment (code in ISO_639-1 format, as defined in .config)
             - speaker_gender: str - auto detected gender of speaker in segment ("Female" / "Male" / "Other")
 
         target_language: str
@@ -22,7 +22,7 @@ class TextProcessor:
 
         Returns
         -------
-        The list of translated, timestamped, text segments. Same format as input
+        The list of translated, timestamped, text segments. Same format as input, only "text" is now the translated text
 
         Example:
 
@@ -34,29 +34,36 @@ class TextProcessor:
         """
 
         # iterate through the original text_segments to create a similar list of dicts but with text translated
-        translated_text = []
+        translated_list = []
         for segment in text_segments:
-            translated_segment = self.translate_text(segment['text'], target_language)
+            new_text = self.translate_text(segment["text"], target_language, segment["language"])
+            new_dict = segment.copy()
+            new_dict["text"] = new_text
+            # new_dict["language"] = target_language
+            translated_list.append(new_dict)
 
-            translated_text = []  # replace original text with translated text, in text_segments
-
-        return translated_text
+        return translated_list
 
     @staticmethod
-    def translate_text(text: str, target_language: str) -> str:
+    def translate_text(text: str, to_language: str, from_language: str = None) -> str:
         """
-        Translate a single text string.
+        Translate a single text string. Original language of text is currently auto-detected.
 
         Parameters
         ----------
         text: str
             Text to translate
-        target_language: str
-            The target language for the translation (language code)
+        to_language: str
+            The target language for the translation. 2-letter language code in ISO_639-1 format, as defined in .config
+        from_language: str
+            The original language in text. 2-letter language code in ISO_639-1 format, as defined in .config
 
         Returns
         -------
         The translated string.
         """
 
-        return ""
+        translator = Translator(to_lang=to_language, from_lang=from_language)
+        translation = translator.translate(text)
+
+        return translation

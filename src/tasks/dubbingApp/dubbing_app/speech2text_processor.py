@@ -1,14 +1,14 @@
-from typing import List, Dict
+from typing import Dict, List, Union
 import whisper
 
 
 class Speech2TextProcessor:
-    def speech_to_text(self, audio_file: str) -> List[Dict[str, int, int, str, str]]:
+    def speech_to_text(self, audio_file: str) -> List[Dict[str, Union[str, int]]]:
         """
         Perform speech-to-text conversion on the audio.
-        During the process the language is detected, as well as each speaker gender.
-        The speech is split into shorter transcribed audio segments (phrases?)
-        ToDo: Confirm output format together with #task-03, #task-04 and #task-05
+        During the process, the language is detected, as well as each speaker's gender.
+        The speech is split into shorter transcribed audio segments (phrases?).
+        ToDo: Confirm output format together with #task-03, #task-04, and #task-05
 
         Parameters
         ----------
@@ -17,15 +17,15 @@ class Speech2TextProcessor:
 
         Returns
         -------
-        The list of transcribed, timestamped, text segments. Dictionary elements:
+        List of transcribed, timestamped, text segments. Dictionary elements:
             - text: str - the transcribed text segment (phrase?)
             - start: int - start time of phrase within the audio, in milliseconds
             - end: int - end time of phrase within the audio, in milliseconds
-            - language: str - auto detected language in audio segment (language list defined in .config)
-            - speaker_gender: str - auto detected gender of speaker in segment ("Female" / "Male" / "Other")
+            - language: str - auto-detected language in audio segment (language list defined in .config)
+            - speaker_gender: str - auto-detected gender of speaker in segment ("Female" / "Male" / "Other")
 
-        Example:
-
+        Example
+        -------
         text_segments = [
             {"text": "Hola", "start": 1100, "end": 1800, "language": "es", "speaker_gender": "Female"},
             {"text": "Buenos dias", "start": 2000, "end": 2345, "language": "es", "speaker_gender": "Male"},
@@ -33,6 +33,10 @@ class Speech2TextProcessor:
 
         """
 
-        text_segments = [dict(), dict()]
+        text_segments = [
+            {"text": "Hola", "start": 1100, "end": 1800, "language": "es", "speaker_gender": "Female"},
+            {"text": "Buenos dias", "start": 2000, "end": 2345, "language": "es", "speaker_gender": "Male"},
+        ]
 
         return text_segments
+

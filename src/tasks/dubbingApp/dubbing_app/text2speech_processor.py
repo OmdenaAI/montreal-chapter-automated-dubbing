@@ -1,9 +1,9 @@
 from pydub import AudioSegment
-from typing import List, Dict
+from typing import Dict, List, Union
 
 
 class Text2SpeechProcessor:
-    def text_to_speech(self, text_segments: list, target_language: str) -> List[Dict[AudioSegment, int, int]]:
+    def text_to_speech(self, text_segments: list, target_language: str) -> List[Dict[str, Union[AudioSegment, int]]]:
         """
         Perform text-to-speech, generating audio segments from the given text segments.
         ToDo: Confirm output format together with  #task-05
