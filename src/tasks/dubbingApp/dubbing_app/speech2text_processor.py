@@ -146,6 +146,7 @@ class Speech2TextProcessor:
         -------
         The dictionary of transcribed, timestamped, text segments. Dictionary elements:
             - text: str - the transcribed text
+            - lang: str - detected language
             - segments - list of dictionaries with the following elements:
                 - phrase: str phrase
                 - start: int - start time of phrase within the audio, in milliseconds
@@ -153,12 +154,13 @@ class Speech2TextProcessor:
 
         """
 
-        def process_final_result(result):
+        def process_final_result(result, lang):
             """
             processes Whisper output into proper dictionary of results
             """
             final_result = {}
             final_result['text'] = result["text"]
+            final_result['lang'] = lang
             final_result['segments'] = []
             for s in result['segments']:
                 d={}
@@ -181,12 +183,13 @@ class Speech2TextProcessor:
         mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
         _, probs = model.detect_language(mel)
-        logger.info(f"Detected language: {max(probs, key=probs.get)}")
+        lang = max(probs, key=probs.get)
+        logger.info(f"Detected language: {lang}")
 
         #just text and phrases, no by-word timestamps
         result = model.transcribe(audio_file)
 
-        final_result = process_final_result(result)
+        final_result = process_final_result(result, lang)
 
         return final_result
 
