@@ -1,4 +1,5 @@
 ffmpeg
 pydub
+pytube
 translate
 whisper
