@@ -28,9 +28,6 @@ async def text_to_speech(text_segments) -> None:
         speaker: Male, Female
         Language: en, es, fr
     
-    Returns:
-    --------
-    AudioSegment : combined audio in the format of AudioSegment
     
     """
     audio_sum = AudioSegment.empty()  
