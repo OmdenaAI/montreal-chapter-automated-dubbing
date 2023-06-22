@@ -1,5 +1,6 @@
 ffmpeg
 pydub
 pytube
+pytorch
 translate
-whisper
+openai-whisper
