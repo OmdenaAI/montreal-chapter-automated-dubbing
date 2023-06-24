@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/tasks/dubbingApp/dubbing_app"
+    ]
+}
