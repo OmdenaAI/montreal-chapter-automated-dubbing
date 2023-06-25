@@ -3,51 +3,68 @@ from translate import Translator
 
 
 class TextProcessor:
-    def translate_text_segments(self, text_segments: list, target_language: str) -> List[Dict[str, Union[str, int]]]:
+    def translate_text_segments(self, text_dict: dict, target_language: str) -> Dict[str, List[Union[str, int]]]:
         """
         Perform text translation of all text segments.
 
         Parameters
         ----------
-        text_segments: list
-            The list of transcribed, timestamped, text segments. Dictionary elements:
-            - text: str - the transcribed text segment (phrase?)
-            - start: int - start time of phrase within the audio, in milliseconds
-            - end: int - end time of phrase within the audio, in milliseconds
-            - language: str - original language in audio segment (code in ISO_639-1 format, as defined in .config)
-            - speaker_gender: str - auto detected gender of speaker in segment ("Female" / "Male" / "Other")
+        text_dict: dict
+            The dictionary of transcribed, timestamped, text segments. Dictionary elements:
+                - language: str - original language in audio (code in ISO_639-1 format, as defined in .config)
+                - speaker_gender: str - auto-detected gender of speaker ('female' / 'male' / '')
+                - segments: list  - list of dictionaries with the following elements:
+                    - id: int - segment sequence number
+                    - phrase: str - phrase text
+                    - start: int - start time of phrase within the audio, in milliseconds
+                    - end: int - end time of phrase within the audio, in milliseconds
+                - text: str - transcribed text in full
 
         target_language: str
             The target language for the translation (language code)
 
         Returns
         -------
-        The list of translated, timestamped, text segments. Same format as input, only "text" is now the translated text
+        The list of translated, timestamped, text segments. Same format as input, only "phrase" in each segment is
+        replaced by the translated text
 
         Example:
 
-        text_segments = [
-            {"text": "Hola", "start": 1100, "end": 1800, "language": "es", "speaker_gender": "Female"},
-            {"text": "Buenos dias", "start": 2000, "end": 2345, "language": "es", "speaker_gender": "Male"},
-        ]
-
+        translated_text_dict = {
+            'language': 'es',
+            'speaker_gender': '',
+            'segments': [
+              {'id': 0,
+               'start': 0.0,
+               'end': 9.82,
+               'phrase': 'What is the worst insect on the planet?'},
+              {'id': 1,
+               'start': 15.48,
+               'end': 17.16,
+               'phrase': 'The mosquito.'}
+               ],
+            'text': 'What is the worst insect on the planet? The mosquito.'
+        }
         """
 
         # iterate through the original text_segments to create a similar list of dicts but with text translated
         translated_list = []
-        for segment in text_segments:
-            new_text = self.translate_text(segment["text"], target_language, segment["language"])
+        for segment in text_dict['segments']:
+            new_text = self.translate_text(segment['phrase'], target_language, text_dict['language'])
             new_dict = segment.copy()
-            new_dict["text"] = new_text
+            new_dict['phrase'] = new_text
             # new_dict["language"] = target_language
             translated_list.append(new_dict)
 
-        return translated_list
+        translated_text_dict = text_dict
+        translated_text_dict['segments'] = translated_list
+
+        return translated_text_dict
 
     @staticmethod
     def translate_text(text: str, to_language: str, from_language: str = None) -> str:
         """
-        Translate a single text string. Original language of text is currently auto-detected.
+        Translate a single text string. If not provided in ```from_language```, original language is auto-detected.
 
         Parameters
         ----------
