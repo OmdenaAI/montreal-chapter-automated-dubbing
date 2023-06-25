@@ -17,7 +17,7 @@ class Text2SpeechProcessor:
         
         Parameters:
         -----------
-        text_segments : list
+        text_segments : list 
             A list of dictionaries containing translated and timestamped text segments, language, and speaker gender.
             Example:
             [
