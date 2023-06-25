@@ -15,7 +15,7 @@ class Text2SpeechProcessor:
         Combines it based on timestamps
         Returns a list of dictionaries containing the audio segments and their respective start times.
         
-        Parameters:
+        Parameters: 
         -----------
         text_segments : list 
             A list of dictionaries containing translated and timestamped text segments, language, and speaker gender.
