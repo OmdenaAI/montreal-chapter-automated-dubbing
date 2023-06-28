@@ -9,7 +9,7 @@ whisper = Whisper()
 def detect_language(text):
     return detect(text)
 
-#  Function to perform speech-to-text conversion
+#  Function to perform speech-to-text conversion:
 def speech_to_text(audio_file, known_language):
     # Load audio file
     audio, sample_rate = whisper.read_audio(audio_file)
