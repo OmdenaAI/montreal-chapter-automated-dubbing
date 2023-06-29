@@ -17,7 +17,7 @@ class DubbingApp:
         self.text2speech_processor = Text2SpeechProcessor()
         self.dubbing_processor = DubbingProcessor()
 
-    def process_pipeline(self, video_url: str, target_language: str):
+    async def process_pipeline(self, video_url: str, target_language: str):
         # Gets the video from YouTube, to a local video file
         video_file_path = self.video_processor.get_video(video_url)
 
@@ -31,7 +31,7 @@ class DubbingApp:
         translated_text = self.text_processor.translate_text_segments(timestamped_text, target_language)
 
         # Convert the translated text into speech
-        translated_audio = self.text2speech_processor.text_to_speech(translated_text, target_language)
+        translated_audio = await self.text2speech_processor.text_to_speech(translated_text['segments'], target_language)
 
         # Concatenate/sync the translated audio segments
         dubbed_audio = self.dubbing_processor.join_audio_segments(translated_audio)

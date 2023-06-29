@@ -1,3 +1,4 @@
+edge_tts
 ffmpeg
 pydub
 pytube

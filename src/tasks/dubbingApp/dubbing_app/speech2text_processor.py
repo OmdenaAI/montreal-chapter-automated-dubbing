@@ -24,26 +24,16 @@ class Speech2TextProcessor:
         Returns
         -------
         The dictionary of transcribed, timestamped, text segments. Dictionary elements:
-            - language: str - detected language in audio (code in ISO_639-1 format, as defined in .config)
-            - speaker_gender: str - auto-detected gender of speaker ('female' / 'male' / '')
-            - segments: list  - list of dictionaries with the following elements:
+            - segments: list - list of dictionaries with the following elements:
                 - id: int - segment sequence number
-                - phrase: str - phrase text
                 - start: int - start time of phrase within the audio, in milliseconds
                 - end: int - end time of phrase within the audio, in milliseconds
-            - text: str - transcribed text in full
-
+                - speaker_gender: str - auto-detected gender of speaker ('Female' / 'Male' / '')
+                - text: str - phrase text
+                - audio: AudioSegment - corresponding generated audio (empty, filled later)
+            - original_language: str - detected language in original audio (code in ISO_639-1 format, as in .config)
+            - original_text: str - transcribed text in full
         """
-
-        def process_final_result(full_result, language):
-            """
-            processes Whisper output into proper dictionary of results
-            """
-            result_dict = {'language': language, 'speaker_gender': '', 'segments': [], 'text': full_result["text"]}
-            for s in full_result['segments']:
-                d = {'id': s['id'], 'start': s['start'], 'end': s['end'], 'phrase': s['text']}
-                result_dict['segments'].append(d)
-            return result_dict
 
         torch.cuda.is_available()
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -63,9 +53,28 @@ class Speech2TextProcessor:
         # just text and phrases, no by-word timestamps
         result = model.transcribe(audio_file)
 
-        final_result = process_final_result(result, lang)
+        final_result = self.process_transcription(result, lang)
 
         return final_result
+
+    @staticmethod
+    def process_transcription(full_result, language):
+        """
+        processes Whisper output into proper dictionary of results
+        """
+        result_dict = {'segments': [],
+                       'original_language': language,
+                       'original_text': full_result['text']}
+        for s in full_result['segments']:
+            d = {'id': s['id'],
+                 'start': s['start'],
+                 'end': s['end'],
+                 'speaker_gender': '',
+                 'text': s['text'],
+                 'audio': None
+                 }
+            result_dict['segments'].append(d)
+        return result_dict
 
     def setup_log(self):
         """

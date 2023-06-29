@@ -1,4 +1,3 @@
-import asyncio
 import random
 from pydub import AudioSegment
 from typing import Dict, List, Union
@@ -7,8 +6,21 @@ from edge_tts import VoicesManager
 import tempfile
 import os
 
+
 class Text2SpeechProcessor:
-    async def text_to_speech(self, text_segments: List[Dict[str, Union[str, int]]], target_language: str) -> List[Dict[str, Union[AudioSegment, int]]]:
+    async def text_to_speech(self, translated_dict: Dict, target_language: str) -> Dict[str, List[Union[str, int]]]:
+
+        segments = translated_dict['segments']
+        audio_segments = await self.segments_text_to_speech(segments, target_language)
+
+        audio_dict = translated_dict
+        audio_dict['segments'] = audio_segments
+
+        return audio_dict
+
+    @staticmethod
+    async def segments_text_to_speech(text_segments: List[Dict[str, Union[str, int]]], target_language: str) \
+            -> List[Dict[str, Union[AudioSegment, int]]]:
         """
         The module converts the text segments to audio
         Combines it based on timestamps
@@ -29,45 +41,36 @@ class Text2SpeechProcessor:
         Returns:
         --------
         list
-            A list of dictionaries containing audio segments and their start times.
-            Example:
-            [
-                {"audio": <AudioSegment>, "start_time": 0},
-                {"audio": <AudioSegment>, "start_time": 5000},
-                ...
-            ]
+            A similar list, with every `audio` elements now filled with the generated audio
         """
-        audio_sum = AudioSegment.empty()
         result = []
         
         with tempfile.TemporaryDirectory() as tmpdirname:
-            print('created temporary directory', tmpdirname)
             temp_file_path = os.path.join(tmpdirname, "temp.wav")
-            print(temp_file_path)
-            
-            prev_audio_duration = 0
-            
+
             for segment in text_segments:
-                speaker = segment['speaker_gender']
-                lang = segment['language']
+                try:
+                    speaker = segment['speaker_gender']
+                except:
+                    speaker = "Female"
                 text = segment['text']
                 start_ms = segment['start']
                 
                 # Dynamic voice selection using VoicesManager class,
                 # A class to find the correct voice based on their attributes.
                 voices = await VoicesManager.create()
-                voice = voices.find(Gender=speaker, Language=lang)
-                
+                voice = voices.find(Gender=speaker, Language=target_language)
+                try:
+                    voice = random.choice(voice)["Name"]
+                except:
+                    voice = "en-GB-SoniaNeural"
+
                 # Using communicate class from edge_tts for communicating with the service.
-                communicate = edge_tts.Communicate(text, random.choice(voice)["Name"])
+                communicate = edge_tts.Communicate(text, voice)
                 await communicate.save(temp_file_path)
                 audio_segment = AudioSegment.from_file(temp_file_path)
-                
-                silence_duration = start_ms - prev_audio_duration
-                audio_sum += AudioSegment.silent(duration=silence_duration) + audio_segment
-                
-                prev_audio_duration = len(audio_segment)
-                
-                result.append({"audio": audio_segment, "start_time": start_ms})
+
+                segment['audio'] = audio_segment
+                result.append(segment)
         
         return result
