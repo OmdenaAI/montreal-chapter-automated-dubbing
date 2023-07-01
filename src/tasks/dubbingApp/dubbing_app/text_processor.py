@@ -26,8 +26,8 @@ class TextProcessor:
 
         Returns
         -------
-        The list of translated, timestamped, text segments. Same format as input, only "text" in each segment is
-        replaced by the translated text
+        dict
+            Same format as input, only "text" in each segment is replaced by the translated text
 
         Example:
 

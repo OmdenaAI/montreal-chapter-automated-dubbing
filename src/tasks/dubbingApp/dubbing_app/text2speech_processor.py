@@ -9,7 +9,28 @@ import os
 
 class Text2SpeechProcessor:
     async def text_to_speech(self, translated_dict: Dict, target_language: str) -> Dict[str, List[Union[str, int]]]:
+        """
+        Text-to-Speech
 
+        Parameters:
+        -----------
+        text_dict: dict
+            The dictionary of transcribed, timestamped, text segments. Dictionary elements:
+                - segments: list - list of dictionaries with the following elements:
+                    - id: int - segment sequence number
+                    - start: int - start time of phrase within the audio, in milliseconds
+                    - end: int - end time of phrase within the audio, in milliseconds
+                    - speaker_gender: str - auto-detected gender of speaker ('Female' / 'Male' / '')
+                    - text: str - phrase text
+                    - audio: AudioSegment - corresponding generated audio (empty, filled later)
+                - original_language: str - detected language in original audio (code in ISO_639-1 format, as in .config)
+                - original_text: str - transcribed text in full
+
+        Returns:
+        --------
+        dict
+            A similar dict, with every `audio` elements now filled with the generated audio
+        """
         segments = translated_dict['segments']
         audio_segments = await self.segments_text_to_speech(segments, target_language)
 
@@ -28,16 +49,12 @@ class Text2SpeechProcessor:
         
         Parameters: 
         -----------
-        text_segments : list 
-            A list of dictionaries containing translated and timestamped text segments, language, and speaker gender.
-            Example:
-            [
-                {"text": 'How often do you think about space?', "start": 660, "end": 2700, "language": "en", "speaker_gender": "Female"},
-                {"text": 'Probably not enough considering how much we use it every day.', "start": 3320, "end": 6520, "language": "en", "speaker_gender": "Male"}
-            ]
-        target_language : str
-            The target language for the text-to-speech conversion.
-        
+        text_segments : list
+            The dictionary of transcribed, timestamped, text segments. Dictionary elements:
+
+        target_language: str
+            The target language for the translation (language code)
+
         Returns:
         --------
         list

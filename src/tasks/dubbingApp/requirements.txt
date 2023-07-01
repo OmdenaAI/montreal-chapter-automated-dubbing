@@ -1,5 +1,6 @@
 edge_tts
 ffmpeg
+moviepy
 pydub
 pytube
 pytorch

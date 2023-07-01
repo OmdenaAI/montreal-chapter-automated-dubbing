@@ -31,7 +31,7 @@ class DubbingApp:
         translated_text = self.text_processor.translate_text_segments(timestamped_text, target_language)
 
         # Convert the translated text into speech
-        translated_audio = await self.text2speech_processor.text_to_speech(translated_text['segments'], target_language)
+        translated_audio = await self.text2speech_processor.text_to_speech(translated_text, target_language)
 
         # Concatenate/sync the translated audio segments
         dubbed_audio = self.dubbing_processor.join_audio_segments(translated_audio)

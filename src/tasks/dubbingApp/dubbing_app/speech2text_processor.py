@@ -98,9 +98,9 @@ class Speech2TextProcessor:
     def add_log_line(self):
         self.logger.info(108 * '#')
 
-
-'''
-    def get_speakers_gender(self, audio, g_model='vggvox-v2', vgg_quantized=False, frame_duration=30):
+    '''
+    @staticmethod
+    def get_speakers_gender(audio, g_model='vggvox-v2', vgg_quantized=False, frame_duration=30):
         """
         Perform diarization with gender recognition on the audio.
         malaya-speach non-quantized 'vggvox-v2' model (accuracy 97%, the highest available)
@@ -117,30 +117,49 @@ class Speech2TextProcessor:
         frame_duration: int
             frame duration in msec
 
+
         Returns
         -------
         The list of genders for each second in video
         """
         # check model
-        if (g_model=='deep_speaker'):
+        if (g_model == 'deep_speaker'):
             vgg_quantized = False
         elif (g_model != 'vggvox-v2'):
             g_model = 'vggvox-v2'
-        self.logger.log(logging.INFO, f"Using {g_model} model, quantized = {vgg_quantized}")
+        print(f"Using {g_model} model, quantized = {vgg_quantized}")
 
         y, sr = malaya_speech.load(audio)
-        self.logger.log(len(y), sr)
+        print(len(y), sr)
+
+        # load deep model for genders:
+        ms_g_model = malaya_speech.gender.deep_model(model=g_model, quantized=vgg_quantized)
+        # load vad model
+        ms_vad_model = malaya_speech.vad.deep_model(model=g_model, quantized=vgg_quantized)
+
         frames = list(malaya_speech.utils.generator.frames(y, frame_duration, sr))
+        print(f"Number of frames: {len(frames)}")
+
+        # make a pipeline with model for prediction of vad
+        pl = Pipeline()
+        pipeline = (pl.batching(5).foreach_map(ms_vad_model.predict).flatten())
+
+        result = pipeline.emit(frames)
+        print(result.keys)
+
         frames_vad = [(frame, result['flatten'][no]) for no, frame in enumerate(frames)]
         grouped_vad = malaya_speech.utils.group.group_frames(frames_vad)
+        grouped_vad = malaya_speech.utils.group.group_frames_threshold(grouped_vad, threshold_to_stop=0.3)
 
-        ms_model = malaya_speech.gender.deep_model(model=g_model, quantized=vgg_quantized)
-        # make a pipeline with model
-        pl = Pipeline()
-        pipeline = (pl.foreach_map(ms_model).flatten())
+        # final pipeline:
+        p_final = Pipeline()
+        pipeline_final = (
+            p_final.foreach_map(ms_g_model).flatten()
+        )
+        # pipeline_final.visualize()
 
         samples_vad = [g[0] for g in grouped_vad]
-        result = pipeline.emit(samples_vad)
-        self.logger.log("Detected genders: {result.keys()}")
-        return [(result['flatten'][no]) for no, _ in enumerate(samples_vad)]
-'''
+        result_genders = pipeline_final.emit(samples_vad)
+        print("Detected genders: {result_genders.keys()}")
+        return [(result_genders['flatten'][no]) for no, _ in enumerate(samples_vad)]
+    '''
