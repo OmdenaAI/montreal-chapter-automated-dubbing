@@ -66,17 +66,17 @@ class DubbingProcessor:
             # Concatenate the video clip with the audio clip
             final_clip = video_clip.set_audio(audio_clip)
 
-        # Append "_dubbed" to the video filename
-        directory, filename = os.path.split(video_path)
-        base_name, extension = os.path.splitext(filename)
-        new_base_name = base_name + "_dubbed"
-        new_video_path = os.path.join(directory, new_base_name + extension)
+            # Append "_dubbed" to the video filename
+            directory, filename = os.path.split(video_path)
+            base_name, extension = os.path.splitext(filename)
+            new_base_name = base_name + "_dubbed"
+            new_video_path = os.path.join(directory, new_base_name + extension)
 
-        # Write the video clip with the replaced audio to the output file
-        final_clip.write_videofile(new_video_path)
+            # Write the video clip with the replaced audio to the output file
+            final_clip.write_videofile(new_video_path, codec="libx264", audio_codec="aac")
 
-        # Close the video clips
-        video_clip.close()
-        final_clip.close()
+            # Close the video clips
+            video_clip.close()
+            final_clip.close()
 
         return new_video_path
