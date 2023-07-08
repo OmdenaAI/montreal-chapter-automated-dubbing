@@ -75,8 +75,9 @@ class DubbingProcessor:
             # Write the video clip with the replaced audio to the output file
             final_clip.write_videofile(new_video_path, codec="libx264", audio_codec="aac")
 
-            # Close the video clips
+            # Close the clips
             video_clip.close()
+            audio_clip.close()
             final_clip.close()
 
         return new_video_path
