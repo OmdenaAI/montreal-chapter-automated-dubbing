@@ -34,6 +34,13 @@ class DubbingApp:
         translated_audio = await self.text2speech_processor.text_to_speech(translated_text, target_language,
                                                                            target_gender)
 
+        # Shorten the translated text segments of the corresponding audio that exceeds the segment slot duration.
+        translated_audio = self.text_processor.shorten_text_segments(translated_audio)
+
+        # Convert, again, the shortened text into speech
+        translated_audio = await self.text2speech_processor.text_to_speech(translated_text, target_language,
+                                                                           target_gender)
+
         # Concatenate/sync the translated audio segments
         dubbed_audio = self.dubbing_processor.join_audio_segments(translated_audio)
 

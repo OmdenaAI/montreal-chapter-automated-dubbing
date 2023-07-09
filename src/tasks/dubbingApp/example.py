@@ -7,9 +7,10 @@ async def main():
     # Get command-line arguments
     video_url = sys.argv[1]
     target_language = sys.argv[2]
+    target_gender = sys.argv[3]
 
     app = DubbingApp()
-    dubbed_video_url = await app.process_pipeline(video_url, target_language)
+    dubbed_video_url = await app.process_pipeline(video_url, target_language, target_gender)
 
     print(f"Dubbed video created here: {dubbed_video_url}")
 

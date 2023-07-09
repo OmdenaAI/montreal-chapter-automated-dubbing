@@ -1,5 +1,6 @@
 edge_tts
 ffmpeg
+openai
 pydub
 pytube
 pytorch

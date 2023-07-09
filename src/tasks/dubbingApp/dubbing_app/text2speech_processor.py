@@ -6,6 +6,8 @@ from edge_tts import VoicesManager
 import tempfile
 import os
 
+from .config import DEFAULT_VOICES, SUPPORTED_LANGUAGES, SUPPORTED_LOCALE
+
 
 class Text2SpeechProcessor:
     async def text_to_speech(self, translated_dict: Dict, target_language: str, target_gender: str = None) \
@@ -90,29 +92,25 @@ class Text2SpeechProcessor:
             except:
                 speaker = "Female"
 
-        # Dynamic voice selection using VoicesManager class,
-        # A class to find the correct voice based on their attributes.
+        # Dynamic voice selection using VoicesManager class, a class to find the correct voice based on their
+        # attributes (language, gender, locale)
         voices = await VoicesManager.create()
-        voice = voices.find(Gender=speaker, Language=target_language)
+        voice = voices.find(Gender=speaker, Language=target_language, Locale=SUPPORTED_LOCALE.get(target_language))
         try:
-            voice = random.choice(voice)["Name"]
+            voice = random.choice(voice)["ShortName"]
         except:
-            if target_language == 'de':
-                voice = "de-DE-KatjaNeural"
-            elif target_language == 'en':
-                voice = "en-GB-SoniaNeural"
-            elif target_language == 'es':
-                voice = "es-ES-ElviraNeural"
-            elif target_language == 'fr':
-                voice = "fr-FR-DeniseNeural"
+            if target_language in SUPPORTED_LANGUAGES.keys() and target_language in DEFAULT_VOICES.keys():
+                voice = DEFAULT_VOICES[target_language][speaker]
             else:
-                voice = "en-GB-SoniaNeural"
+                voice = 'en-GB-SoniaNeural'
 
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            temp_file_path = os.path.join(tmpdirname, "temp.wav")
+        with tempfile.TemporaryDirectory() as tmp_dir_name:
+            temp_file_path = os.path.join(tmp_dir_name, "temp.wav")
 
             for segment in text_segments:
                 text = segment['text']
+                if segment.get('voice'):
+                    voice = segment.get('voice')
 
                 # Using communicate class from edge_tts for communicating with the service.
                 communicate = edge_tts.Communicate(text, voice)
@@ -120,6 +118,7 @@ class Text2SpeechProcessor:
                 audio_segment = AudioSegment.from_file(temp_file_path)
 
                 segment['audio'] = audio_segment
+                segment['voice'] = voice
                 result.append(segment)
         
         return result

@@ -12,7 +12,6 @@ class VideoProcessor:
     def get_video(self, video_url: str) -> str:
         """
         Download the YouTube video, converting it into a local MP4 file.
-        ToDo: File format to be agreed on. MP4? Together with #task-06-user-interface
 
         Parameters
         ----------
@@ -50,7 +49,6 @@ class VideoProcessor:
     def extract_audio(self, video_file: str) -> str:
         """
         Extract the audio from the video, saving it to a separate audio file.
-        ToDo: File format to be agreed on. MP3? WAV? Together with #task-02-speech-to-text
 
         Parameters
         ----------
