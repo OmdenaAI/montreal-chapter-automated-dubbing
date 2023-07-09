@@ -2,9 +2,9 @@
 Configuration and parameters' definition for the app
 """
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = ""
 
-OPENAI_API_ORGANIZATION = "org-Nh2MxFbVvsXVfSLVp57BSbFP"
+OPENAI_API_ORGANIZATION = ""
 
 SUPPORTED_LANGUAGES = {
     "de": "german",
