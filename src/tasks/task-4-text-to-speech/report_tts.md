@@ -7,7 +7,6 @@ The scope of this task is to convert the translated text to speech based on time
 | Lead       | Divya Muthu Krishnan          |
 | Co-lead | Sherya Kommuri|
 | Collaborators |Vishnu Vardhan, Benito Martin, Winston   | 
-| | |
 
 Our collaborators researched various libraries/APIs. One of our collaborators, Winston summarized its advantages and disadvatages of the following models. 
 1. Tacotron2 / HiFIGAN
