@@ -1,19 +1,18 @@
 
 from datetime import date
-import os
-import glob as glob
+import os, glob, pathlib, re, base64
 import streamlit as st
-import pathlib
-import re
 
-PROFILE_IMAGE="https://omdena.com/wp-content/uploads/2022/07/place-holder.png"
 
-BACKGROUND_IMAGE="https://omdena.com/wp-content/uploads/2023/04/Automate-Dubbing-Process-using-NLP-1.jpeg"
-
-PAGE_TITLE="Breaking Down Language Barriers: Using AI and NLP to Automate Dubbing Process for Improved Accessibility and Inclusivity"
+PAGE_TITLE="Automate Video Dubbing Process"
 
 FOOTER_TEXT=f"Project by Omdena Montreal, Canada Chapter - {date.today().year}"
 
+def image_to_base64(image_path):
+  with open(image_path, "rb") as f:
+     data = f.read()
+  return base64.b64encode(data).decode()
+	
 def get_page_title_id():
   s = re.sub(r"[^\w\s]", '', PAGE_TITLE)
   s = re.sub(r'\[\[(?:[^\]|]*\|)?([^\]|]*)\]\]', r'\1', s)
@@ -22,6 +21,10 @@ def get_page_title_id():
 
 def get_page_title():
   return PAGE_TITLE
+
+BACKGROUND_IMAGE = image_to_base64(os.path.abspath('./images/cover.png'))  #"https://omdena.com/wp-content/uploads/2023/04/Automate-Dubbing-Process-using-NLP-1.jpeg"
+
+PROFILE_IMAGE = os.path.abspath('./images/omdena_montreal_logo.png')  #"https://omdena.com/wp-content/uploads/2022/07/place-holder.png"
 
 HEADER_STYLE=f"""<style>
 	          [data-testid="stToolbar"]{{
@@ -43,7 +46,7 @@ HEADER_STYLE=f"""<style>
             padding-right: 10%;
             }}
             #root > div:nth-child(1) > div > div > div > div > section > div > div:nth-child(1) > div > div:nth-child(1) > div{{
-            background-image: url("{BACKGROUND_IMAGE}");
+            background-image: url("data:image/png;base64,{ BACKGROUND_IMAGE }");
             background-size: cover; 
             background-position: center;
             }}
@@ -79,7 +82,7 @@ def main_header():
   with st.container():
       left_side, right_side = st.columns([1,2], gap="small")
       with left_side:
-          st.image(PROFILE_IMAGE, width=300)          
+          st.image(PROFILE_IMAGE, width = 300, output_format = "auto")          
       with right_side:
           st.markdown(HEADER_STYLE, unsafe_allow_html=True)
           st.title(PAGE_TITLE)

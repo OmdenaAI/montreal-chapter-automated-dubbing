@@ -4,7 +4,7 @@ from project_utils.page_layout_helper import main_header
 from streamlit_option_menu import option_menu
 from dubbing_app.config import SUPPORTED_LANGUAGES
 from dubbing_app.dubbing_app import DubbingApp 
-import os, asyncio
+import requests, os, asyncio
 import time
 
 target_language=''
@@ -53,7 +53,7 @@ def main():
     if input_video_url:
       gender_voice = gender
       if gender=="Auto-detect gender":
-        gender_voice=''
+        gender_voice = None
               
       target_lang= list(SUPPORTED_LANGUAGES.keys())[list(SUPPORTED_LANGUAGES.values()).index(target_language.lower())]
       with st.spinner('Dubbing video process in progress...'):

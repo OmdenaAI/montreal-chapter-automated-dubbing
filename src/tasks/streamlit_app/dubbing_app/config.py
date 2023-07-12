@@ -2,11 +2,22 @@
 Configuration and parameters' definition for the app
 """
 
+OPENAI_API_KEY = ""
+
+OPENAI_API_ORGANIZATION = ""
+
 SUPPORTED_LANGUAGES = {
-    "en": "english",
     "de": "german",
+    "en": "english",
     "es": "spanish",
     "fr": "french",
+}
+
+SUPPORTED_LOCALE = {
+    "de": "de-DE",
+    "en": "en-GB",
+    "es": "es-ES",
+    "fr": "fr-FR",
 }
 
 ALL_LANGUAGES = {
@@ -113,3 +124,22 @@ ALL_LANGUAGES = {
 
 LANGUAGES = SUPPORTED_LANGUAGES
 # LANGUAGES = SUPPORTED_LANGUAGES | ALL_LANGUAGES
+
+DEFAULT_VOICES = {
+    'de': {
+        'Female': 'de-DE-KatjaNeural',
+        'Male': 'de-DE-KillianNeural'
+    },
+    'en': {
+        'Female': 'en-GB-SoniaNeural',
+        'Male': 'en-GB-RyanNeural'
+    },
+    'es': {
+        'Female': 'es-ES-ElviraNeural',
+        'Male': 'es-ES-AlvaroNeural'
+    },
+    'fr': {
+        'Female': 'fr-FR-DeniseNeural',
+        'Male': 'fr-FR-HenriNeural'
+    }
+}

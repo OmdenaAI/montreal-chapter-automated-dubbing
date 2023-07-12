@@ -4,6 +4,7 @@ ffmpeg
 pydub
 moviepy
 translate
+openai
 openai-whisper
 streamlit
 streamlit-option-menu
