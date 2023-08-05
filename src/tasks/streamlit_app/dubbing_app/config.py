@@ -1,10 +1,17 @@
 """
 Configuration and parameters' definition for the app
 """
+import streamlit as st
 
 OPENAI_API_KEY = ""
 
 OPENAI_API_ORGANIZATION = ""
+
+if st.secrets["OPENAI_API_KEY"] is not None:
+    OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+
+if st.secrets["OPENAI_API_ORGANIZATION"] is not None:
+    OPENAI_API_ORGANIZATION = st.secrets["OPENAI_API_ORGANIZATION"]
 
 SUPPORTED_LANGUAGES = {
     "de": "german",
@@ -128,11 +135,13 @@ LANGUAGES = SUPPORTED_LANGUAGES
 DEFAULT_VOICES = {
     'de': {
         'Female': 'de-DE-KatjaNeural',
-        'Male': 'de-DE-KillianNeural'
+        'Male': 'de-DE-KillianNeural',
+        'Child(Female)': 'de-DE-GiselaNeural',
     },
     'en': {
         'Female': 'en-GB-SoniaNeural',
-        'Male': 'en-GB-RyanNeural'
+        'Male': 'en-GB-RyanNeural',
+        'Child(Female)': 'en-GB-MaisieNeural',
     },
     'es': {
         'Female': 'es-ES-ElviraNeural',
@@ -140,6 +149,7 @@ DEFAULT_VOICES = {
     },
     'fr': {
         'Female': 'fr-FR-DeniseNeural',
-        'Male': 'fr-FR-HenriNeural'
+        'Male': 'fr-FR-HenriNeural',
+        'Child(Female)': 'fr-FR-EloiseNeural',
     }
 }
